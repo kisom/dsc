@@ -24,18 +24,20 @@
 #include <stdlib.h>
 
 struct slist_node {
-        void                    *entry;
-        size_t                   size;
-        struct slist_node       *next;
+	 void			*entry;
+	 size_t			 size;
+	 struct slist_node	*next;
 };
 
-struct slist_node       *slist_head(void *, size_t);
+int			 slist_insert(struct slist_node **, void *, size_t);
 struct slist_node	*slist_append(struct slist_node *, void *, size_t);
-struct slist_node	*slist_insert(struct slist_node *, void *, size_t);
-struct slist_node       *slist_remove_head(struct slist_node *);
-struct slist_node       *slist_remove_tail(struct slist_node *);
-void                     slist_destroy(struct slist_node *);
-size_t                   slist_length(struct slist_node *);
-void                     print_list(struct slist_node *);
+struct slist_node	*slist_insert_after(struct slist_node *, void *,
+					    size_t);
+struct slist_node	*slist_search(struct slist_node *, void *, size_t);
+struct slist_node	*slist_locate(struct slist_node *, size_t);
+struct slist_node	*slist_remove(struct slist_node *, void *, size_t);
+struct slist_node	*slist_remove_head(struct slist_node *, void *, size_t);
+struct slist_node	*slist_remove_tail(struct slist_node *, void *, size_t);
+size_t			 slist_length(struct slist_node *);
 
 #endif

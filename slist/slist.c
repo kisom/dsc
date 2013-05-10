@@ -19,11 +19,12 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "slist.h"
 
 
-void
+static void
 print_list(struct slist_node *head)
 {
 	struct slist_node	*node = NULL;
@@ -60,125 +61,41 @@ slist_tail(struct slist_node *head)
 }
 
 
-/*
- * Create a new head node. This is used to initialise a new list.
- */
-struct slist_node *
-slist_head(void *entry, size_t size)
+static struct slist_node *
+slist_create_node(void *entry, size_t size)
 {
-	struct slist_node	*node;
-
-	node = malloc(sizeof(struct slist_node));
-	if (NULL != node) {
-		node->entry = entry;
-		node->size = size;
-		node->next = NULL;
-	}
-	return node;
-}
-
-
-/*
- * Append an element onto the tail of the list.
- */
-struct slist_node *
-slist_append(struct slist_node *head, void * entry, size_t size)
-{
-	struct slist_node	*node, *tail;
-
-	tail = slist_head(entry, size);
-	if (NULL != head) {
-		node = slist_tail(head);
-		node->next = tail;
-	} else {
-		head = tail;
-	}
-
-	return head;
-}
-
-
-/*
- * Insert a node to the beginning of the list.
- */
-struct slist_node *
-slist_insert(struct slist_node *head, void *entry, size_t size)
-{
-	struct slist_node	*new_head;
-
-	new_head = slist_head(entry, size);
-	if (NULL == new_head)
-		return NULL;
-
-	if (NULL == head)
-		new_head->next = NULL;
-	else
-		new_head->next = head;
-	return new_head;
-}
-
-
-/*
- * Remove the node at the start of node.
- */
-struct slist_node *
-slist_remove_head(struct slist_node *head)
-{
-	struct slist_node	*node;
-
-	node = head->next;
-	slist_destroy_node(head);
-	return node;
-}
-
-
-/*
- * Remove the last node in the list.
- */
-struct slist_node *
-slist_remove_tail(struct slist_node *head)
-{
-	struct slist_node	*node, *cursor;
-
-	cursor = head;
-	for (node = cursor->next; node != NULL; cursor = node);
-	slist_destroy_node(node);
-	cursor->next = NULL;
-	return head;
-}
-
-
-/*
- * Destroy the entire list.
- */
-void
-slist_destroy(struct slist_node *head)
-{
-	struct slist_node	*node;
-
-	node = head;
-	while (node != NULL) {
-		node = node->next;
-		slist_destroy_node(head);
-		free(head);
-		head = node;
-	}
-}
-
-
-/*
- * Returns the number of nodes in the list.
- */
-size_t
-slist_length(struct slist_node *head)
-{
-	size_t			 length = 0;
 	struct slist_node	*node = NULL;
 
-	node = head;
-	while (node != NULL) {
-		length++;
-		node = node->next;
+	if (NULL != (node = malloc(sizeof(struct slist_node)))) {
+		if (NULL != (node->entry = malloc(size))) {
+			node->size = size;
+			memcpy(node->entry, entry, size);
+		} else {
+			free(node);
+			node = NULL;
+		}
 	}
-	return length;
+	return node;
 }
+
+
+int
+slist_insert(struct slist_node **head, void *entry, size_t size)
+{
+	struct slist_node	*node = NULL;
+
+	if (NULL != (node = slist_create_node(entry, size))) {
+		node->next = *head;
+		head = &node;
+	}
+	return 0;
+}
+
+struct slist_node	*slist_append(struct slist_node *, void *, size_t);
+struct slist_node	*slist_insert_after(struct slist_node *, void *, size_t);
+struct slist_node	*slist_search(struct slist_node *, void *, size_t);
+struct slist_node	*slist_locate(struct slist_node *, size_t);
+struct slist_node	*slist_remove(struct slist_node *, void *, size_t);
+struct slist_node	*slist_remove_head(struct slist_node *, void *, size_t);
+struct slist_node	*slist_remove_tail(struct slist_node *, void *, size_t);
+size_t			 slist_length(struct slist_node *);
