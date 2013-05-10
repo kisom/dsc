@@ -1,0 +1,125 @@
+.Dd $Mdocdate$
+.Dt LIBSLIST 3
+.Os
+.Sh NAME
+.Nm LIBSLIST
+.Nd statically-compiled singly-linked list library
+.Sh SYNOPSIS
+.In slist.h
+.Ft int
+.Fo slist_insert
+.Fa "struct slist_node **head"
+.Fa "void *entry"
+.Fa "size_t size"
+.Fc
+.Ft int
+.Fo slist_append
+.Fa "struct slist_node **head"
+.Fa "void *entry"
+.Fa "size_t size"
+.Fc
+.Ft int
+.Fo slist_insert_after
+.Fa "struct slist_node *head"
+.Fa "void *entry"
+.Fa "size_t size"
+.Fc
+.Fa ssize_t
+.Fo slist_search
+.Fa "struct slist_node *head"
+.Fa "void *entry"
+.Fa "size_t size"
+.Fc
+.Ft "struct slist_node	*"
+.Fo slist_locate
+.Fa "struct slist_node *head"
+.Fa "size_t index"
+.Fc
+.Ft int
+.Fo slist_remove
+.Fa "struct slist_node **head"
+.Fa "void *entry"
+.Fa "size_t size"
+.Fc
+.Ft int
+.Fo slist_remove_head
+.Fa "struct slist_node **head"
+.Fc
+.Ft int
+.Fo slist_remove_tail
+.Fa "struct slist_node **head"
+.Fc
+.Ft size_t
+.Fo slist_length
+.Fa "struct slist_node *head"
+.Fc
+.Ft void
+.Fo slist_destroy
+.Fa "struct slist_node **head"
+.Fc
+.Sh DESCRIPTION
+.Nm
+is a statically-compiled library providing a singly linked list. The lists are
+based on the
+.Nm slist_node
+structure, defined as
+.Bd -literal
+struct slist_node {
+	 void			*entry;
+	 size_t			 size;
+	 struct slist_node	*next;
+};
+.Ed
+Programs using this list should keep track of a particular
+.Nm slist_node
+that points to the head of the list. An empty list is signified by a NULL
+head. New nodes may be inserted and appended with the
+.Nm slist_insert
+and
+.Nm slist_append
+functions; inserting a node in the middle of the list is done with the
+.Nm slist_insert_after
+function. The
+.Nm slist_search
+function returns the position in the list of the node with the entry passed
+in as an argument;
+.Nm slist_locate
+returns the node at the index passed in.
+.Nm slist_remove
+removes the first node matching the entry passed in;
+.Nm slist_remove_head
+and
+.Nm slist_remove_tail
+remove the head and tail of the list, respectively.
+.Nm slist_tail
+returns the length of the list.
+.Nm slist_destroy
+must be used to destroy a list to make sure that it is properly deallocated.
+.Sh RETURN VALUES
+The functions returning an integer return a -1 on failure and a 0 on success;
+.Nm slist_search
+returns the index of the node being searched for, and -1 if it could not be
+found.
+.Nm slist_locate
+returns the node at the requested index, and NULL if the index is outside
+is outside of the list.
+.Nm slist_length
+returns the length of the list.
+.Sh ERRORS
+The insertion functions will return an error if there was a problem allocating
+memory; the remove functions return an error if the node couldn't be removed.
+.\" .Sh SEE ALSO
+.Sh STANDARDS
+.Nm
+is written in ANSI C and conforms to SUSv4.
+.\" .Sh HISTORY
+.Sh AUTHORS
+.Nm
+was written by
+.An Kyle Isom Aq Mt kyle@tyrfingr.is .
+.Sh CAVEATS
+The entries passed into the insertion and search functions must be able
+to be duplicated with
+.Nm memcpy .
+.Sh BUGS
+Please report all bugs to the author.

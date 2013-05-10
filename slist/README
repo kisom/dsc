@@ -1,0 +1,18 @@
+slist: singly-linked list
+
+The slist structure is a singly-linked list based on the slist_node structure.
+An slist_node has three fields:
+
+        struct slist_node {
+        	 void			*entry;
+        	 size_t			 size;
+        	 struct slist_node	*next;
+        };
+
+All that is required for a list is to use an
+
+        struct slist_node	*head;
+
+An empty list is signified by a node with a value of NULL.
+
+The man page contains documentation on the API.
