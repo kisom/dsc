@@ -1,0 +1,45 @@
+TARG = libdlist.a
+MANPAGE = dlist.3
+OFILES = dlist.o
+LIBDIR = /usr/local/lib
+MANDIR = /usr/local/man/man3
+CC = clang
+LD = clang
+CFLAGS = -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align        \
+		-Wwrite-strings -Wmissing-prototypes -Wmissing-declarations   \
+		-Wnested-externs -Winline -Wno-long-long  -Wunused-variable   \
+		-Wstrict-prototypes -Werror -ansi -D_XOPEN_SOURCE=600         \
+		-D_BSD_SOURCE -ansi -static -g
+LDFLAGS = -static
+
+$TARG::$OFILES
+        ar -crs $TARG $OFILES
+
+all::$TARG
+
+install:V:$TARG
+        install $TARG $LIBDIR
+        install -m 644 $MANPAGE $MANDIR
+
+installall:V:install
+
+uninstall:V:
+        
+uninstallall:V:uninstall
+
+clean:V:
+	rm -f *.o $TARG *core* test_dlist *.plist
+
+nuke:V:clean
+
+check:V:test
+        ./test_dlist
+
+test:V:test_dlist.o libdlist.a
+        $CC -o test_dlist test_dlist.o -L. -ldlist
+
+%.o: %.c
+	$CC $CFLAGS -c $stem.c
+
+&: %.o
+	$CC $LDFLAGS -o $stem $stem.o
