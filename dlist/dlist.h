@@ -28,6 +28,7 @@
 struct dlist_node {
 	 void			*entry;
 	 size_t			 size;
+	 struct dlist_node	*prev;
 	 struct dlist_node	*next;
 };
 

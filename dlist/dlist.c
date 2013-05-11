@@ -55,6 +55,7 @@ dlist_create_node(void *entry, size_t size)
 		if (NULL != (node->entry = malloc(size))) {
 			node->size = size;
 			memcpy(node->entry, entry, size);
+			node->prev = NULL;
 			node->next = NULL;
 		} else {
 			free(node);
@@ -75,7 +76,9 @@ dlist_insert(struct dlist_node **head, void *entry, size_t size)
 
 	if (NULL != (node = dlist_create_node(entry, size))) {
 		node->next = *head;
-		*head = node;
+		(*head)->prev = node;
+	} else {
+		return -1;
 	}
 	return 0;
 }
@@ -94,10 +97,12 @@ dlist_append(struct dlist_node **head, void *entry, size_t size)
 		return -1;
 
 	tail = dlist_tail(*head);
-	if (tail != NULL)
+	if (tail != NULL) {
 		tail->next = node;
-	else
+		node->prev = tail;
+	} else {
 		*head = node;
+	}
 	return 0;
 }
 
@@ -110,13 +115,17 @@ dlist_insert_after(struct dlist_node *node, void *entry, size_t size)
 {
 	struct dlist_node	*new_node = NULL;
 	struct dlist_node	*next = NULL;
+	struct dlist_node	*prev = NULL;
 
 	if (NULL == (new_node = dlist_create_node(entry, size)))
 		return -1;
 
 	next = node->next;
-	node->next = new_node;
+	prev = node->prev;
+	new_node->prev = prev;
 	new_node->next = next;
+	if (prev != NULL)
+		prev->next = new_node;
 	return 0;
 }
 
