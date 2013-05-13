@@ -76,7 +76,9 @@ dlist_insert(struct dlist_node **head, void *entry, size_t size)
 
 	if (NULL != (node = dlist_create_node(entry, size))) {
 		node->next = *head;
-		(*head)->prev = node;
+		if (NULL != *head)
+			(*head)->prev = node;
+		*head = node;
 	} else {
 		return -1;
 	}
@@ -168,7 +170,11 @@ dlist_locate(struct dlist_node *head, size_t index)
 	struct dlist_node	*node = NULL;
 	size_t			 pos = 0;
 
-	for (node = head; node != NULL && pos != index; node = node->next, pos++) ;
+	node = head;
+	while (node != NULL && pos != index) {
+		pos++;
+		node = node->next;
+	}
 	return node;
 }
 
@@ -180,7 +186,7 @@ int
 dlist_remove(struct dlist_node **head, void *entry, size_t size)
 {
 
-	struct dlist_node	*next = NULL;
+	/*struct dlist_node	*next = NULL;*/
 	struct dlist_node	*node = NULL;
 	struct dlist_node	*prev = NULL;
 	int			 removed = 0;
@@ -193,16 +199,7 @@ dlist_remove(struct dlist_node **head, void *entry, size_t size)
 		if (size != node->size)
 			continue;
 		if (0 == memcmp(node->entry, entry, size)) {
-			next = node->next;
-			if (prev != NULL)
-				prev->next = next;
-			else
-				*head = node->next;
-			dlist_destroy_node(node);
-			free(node);
-			node = NULL;
-			removed = 1;
-			break;
+			
 		}
 		prev = node;
 	}

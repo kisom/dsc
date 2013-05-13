@@ -19,6 +19,7 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "dlist.h"
 
@@ -228,6 +229,106 @@ test_remove_head_node(void)
 }
 
 
+static void
+test_list_traverse(void)
+{
+	int			  dlen = 0;
+	int			**seq = new_sequence(0, 10);
+	int			  i = 0;
+	struct dlist_node	 *head = NULL;
+	struct dlist_node	 *node = NULL;
+
+	printf("[+] creating test list\n");
+	for (i = 0; i < 10; i++) {
+		if (-1 == dlist_append(&head, seq[i], sizeof(int)))
+			printf("[!] failed to insert %d\n", *seq[i]);
+	}
+
+	printf("[+] checkng list length\n");
+	dlen = (int)dlist_length(head);
+	if (dlen != 10) {
+		printf("[!] invalid list length\n");
+		goto traverse_exit;
+	}
+	printf("[+] traverse forward\n");
+	node = head;
+	for (i = 0; i < dlen; i++) {
+		printf("%d->", i);
+		if (0 != memcmp(node->entry, seq[i], node->size))
+			printf("[!] node %d mismatch: node->%d seq->%d\n",
+			    i, *(int *)(node->entry), *seq[i]);
+		if (NULL != node->next)
+			node = node->next;
+	}
+	printf("EOL\n");
+	i -= 1;
+
+	printf("[+] traverse backwards\n");
+	while (NULL != node->prev) {
+		printf("%d<-", i);
+		if (0 != memcmp(node->entry, seq[i], node->size))
+			printf("[!] node %d mismatch: node->%d seq->%d\n",
+			    i, *(int *)(node->entry), *seq[i]);
+		node = node->prev;
+		i--;
+	}
+	printf("BOL\n");
+traverse_exit:
+	dlist_destroy(&head);
+	destroy_seq(seq, 10);
+}
+
+
+static void
+test_list_traverse_insert(void)
+{
+	int			  dlen = 0;
+	int			**seq = new_sequence(0, 10);
+	int			  i = 0;
+	struct dlist_node	 *head = NULL;
+	struct dlist_node	 *node = NULL;
+
+	printf("[+] creating test list\n");
+	for (i = 0; i < 10; i++) {
+		if (-1 == dlist_insert(&head, seq[i], sizeof(int)))
+			printf("[!] failed to insert %d\n", *seq[i]);
+	}
+
+	printf("[+] checkng list length\n");
+	dlen = (int)dlist_length(head);
+	if (dlen != 10) {
+		printf("[!] invalid list length\n");
+		goto traverse_exit;
+	}
+	printf("[+] traverse forward\n");
+	node = head;
+	for (i = 0; i < dlen; i++) {
+		printf("%d->", i);
+		if (0 != memcmp(node->entry, seq[(dlen - 1) - i], node->size))
+			printf("[!] node %d mismatch: node->%d seq->%d\n",
+			    i, *(int *)(node->entry), *seq[i]);
+		if (NULL != node->next)
+			node = node->next;
+	}
+	printf("EOL\n");
+	i -= 1;
+
+	printf("[+] traverse backwards\n");
+	while (NULL != node->prev) {
+		printf("%d<-", i);
+		if (0 != memcmp(node->entry, seq[dlen - 1 - i], node->size))
+			printf("[!] node %d mismatch: node->%d seq->%d\n",
+			    i, *(int *)(node->entry), *seq[i]);
+		node = node->prev;
+		i--;
+	}
+	printf("BOL\n");
+traverse_exit:
+	dlist_destroy(&head);
+	destroy_seq(seq, 10);
+}
+
+
 int
 main(void)
 {
@@ -242,5 +343,9 @@ main(void)
 	test_remove_head();
 	printf("[+] test_remove_head_node\n");
 	test_remove_head_node();
+	printf("[+] test_list_traverse\n");
+	test_list_traverse();
+	printf("[+] test_list_traverse_insert\n");
+	test_list_traverse_insert();
 	printf("[+] finished.\n");
 }
