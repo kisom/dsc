@@ -13,7 +13,9 @@ After another re-reading of "Programming Wisdom", I was struck by the quote
 In order to progress in my path to being a more competent developer, I've
 decided to work on implementing these data structures in C. This may even
 be a semi-annual tradition, to always go back to my roots. The more familiar
-I become with these data structures, the faster this should be.
+I become with these data structures, the faster this should be. In essence,
+this is something of a kata, a programming drill that helps me to focus my
+thoughts on other problems.
 
 IN-PROGRESS
 -----------
