@@ -21,3 +21,8 @@ IN-PROGRESS
 -----------
 * slist: singly-linked list
 * dlist: doubly-linked list
+
+LICENSE
+-------
+This code is released under an ISC license. See the LICENSE file for the
+full text of the license.
