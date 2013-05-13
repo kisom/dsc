@@ -59,7 +59,7 @@
 .Fc
 .Sh DESCRIPTION
 .Nm
-is a statically-compiled library providing a singly linked list. The lists are
+is a statically-compiled library providing a doubly linked list. The lists are
 based on the
 .Nm dlist_node
 structure, defined as
@@ -67,6 +67,7 @@ structure, defined as
 struct dlist_node {
 	 void			*entry;
 	 size_t			 size;
+	 struct dlist_node	*prev;
 	 struct dlist_node	*next;
 };
 .Ed
