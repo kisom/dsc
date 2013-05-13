@@ -1,6 +1,21 @@
 dsc
 data structures in C
 
+After another re-reading of "Programming Wisdom", I was struck by the quote
+
+> The following data structures are a complete list for almost all practical
+> programs:
+>     array
+>     linked list
+>     hash table
+>     binary tree
+
+In order to progress in my path to being a more competent developer, I've
+decided to work on implementing these data structures in C. This may even
+be a semi-annual tradition, to always go back to my roots. The more familiar
+I become with these data structures, the faster this should be.
+
 IN-PROGRESS
 -----------
 * slist: singly-linked list
+* dlist: doubly-linked list
