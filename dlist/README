@@ -1,4 +1,4 @@
-dlist: singly-linked list
+dlist: doubly-linked list
 
 The dlist structure is a doubly-linked list based on the dlist_node structure.
 An dlist_node has three fields:
